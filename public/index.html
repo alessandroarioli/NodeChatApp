@@ -10,9 +10,10 @@
           <div class="button minimize"></div>
           <div class="button maximize"></div></div>
           <div class="title">My secret room</div>
-        </div><ul class="messages" id="messages_list">
-        </ul>
+        </div>
+        <ul class="messages" id="messages_list"></ul>
         <div class="bottom_wrapper clearfix">
+          <div id="typing-area" style="color: #a3d063; font-style: 'italic'"></div>
           <div class="message_input_wrapper">
             <input class="message_input" id="message_input_field" placeholder="Type your message here..." /></div>
             <div class="send_message" id="send_message_button">
@@ -41,21 +42,27 @@
     </script>
 
     <script>
-      var socket = io.connect('http://192.168.1.111:8080');
+      var socket = io.connect('http://localhost:8080');
       var nickname, rightLeft;
 
       document.getElementById('send_message_button').addEventListener("click", function() {
         var message = document.getElementById("message_input_field").value;
+
         document.getElementById("message_input_field").value = '';
-        if (message) { socket.emit('messages', message) };
+        if (message) {
+          socket.emit('messages', message);
+        };
       });
 
       document.getElementById('message_input_field').addEventListener("keyup", function(event) {
+        socket.emit('typing', true);
         event.preventDefault();
         if (event.keyCode == 13) {
+          socket.emit('typing', false);
           document.getElementById('send_message_button').click();
         }});
 
+      // Socket.io events
       socket.on('connect', function(data) {
         nickname = prompt('Insert your Nickname!');
         socket.emit('join', nickname);
@@ -67,6 +74,11 @@
         messageHtml = messageHtml.replace('messageType', rightLeft);
         document.getElementById('messages_list').innerHTML += messageHtml;
         ScrollToBottom();
+      });
+
+      socket.on('typing', function(data) {
+        console.log(data);
+        document.getElementById('typing-area').innerHTML = data;
       });
 
     </script>

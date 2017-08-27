@@ -5,18 +5,10 @@ var io = require('socket.io').listen(server);
 var path = require('path');
 var redis = require('redis');
 var redisClient = redis.createClient();
+var logger = require('./logger');
+App.use(logger);
 
-App.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname + '/' + 'index.html'));
-});
-
-App.get('/style.css', function(req, res) {
-  res.sendFile(path.join(__dirname + '/' + 'resources' + '/' +'style.css'));
-});
-
-App.get('/socket.io.js', function(req, res) {
-  res.sendFile(path.join(__dirname + '/' + 'resources' + '/' +'socket.io.js'));
-});
+App.use(express.static('public'));
 
 var storeMessage = function(nickname, data) {
   var message = JSON.stringify({ data: data });
@@ -27,6 +19,7 @@ var storeMessage = function(nickname, data) {
 };
 
 io.on('connection', function(client) {
+
   client.on('messages', function(data){
     var nickname = client.nickname;
     var message = {
@@ -50,4 +43,12 @@ io.on('connection', function(client) {
       });
     });
   });
+
+  client.on('typing', function(content) {
+    var typingSentence;
+    content ? typingSentence = client.nickname + ' is typing...' : typingSentence = '';
+
+    client.broadcast.emit('typing', typingSentence);
+  });
+
 });
