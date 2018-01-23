@@ -1,0 +1,44 @@
+var socket = io.connect('http://localhost:8080');
+var nickname, rightLeft;
+
+function ScrollToBottom() {
+  var messagesContainer = document.getElementById('messages_list');
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+};
+
+document.getElementById('send_message_button').addEventListener("click", function() {
+  var message = document.getElementById("message_input_field").value;
+
+  document.getElementById("message_input_field").value = '';
+  if (message) {
+    socket.emit('messages', message);
+  };
+});
+
+document.getElementById('message_input_field').addEventListener("keyup", function(event) {
+  socket.emit('typing', true);
+  event.preventDefault();
+  if (event.keyCode == 13) {
+    socket.emit('typing', false);
+    document.getElementById('send_message_button').click();
+  }});
+
+
+// Socket.io events
+socket.on('connect', function(data) {
+  nickname = (localStorage.getItem('nickname')) ? localStorage.getItem('nickname') : prompt('Insert your Nickname!');
+  localStorage.setItem('nickname', nickname);
+  socket.emit('join', nickname);
+});
+
+socket.on('messages', function(data) {
+  (data.nickname === nickname) ? rightLeft = 'left' : rightLeft = 'right';
+  var messageHtml = "<li class='message messageType appeared'><div class='avatar'></div><div class='text_wrapper'><div class='text'><i>" + data.nickname + "</i>  :  " + data.message + "</div></div></li>";
+  messageHtml = messageHtml.replace('messageType', rightLeft);
+  document.getElementById('messages_list').innerHTML += messageHtml;
+  ScrollToBottom();
+});
+
+socket.on('typing', function(data) {
+  document.getElementById('typing-area').innerHTML = data;
+});

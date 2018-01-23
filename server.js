@@ -6,9 +6,12 @@ var path = require('path');
 var redis = require('redis');
 var redisClient = redis.createClient();
 var logger = require('./logger');
+var { MongoDB } = require('./mongo-driver');
+
 App.use(logger);
 
 App.use(express.static('public'));
+
 
 var storeMessage = function(nickname, data) {
   var message = JSON.stringify({ data: data });

@@ -5,12 +5,14 @@
   "main": "app.js",
   "dependencies": {
     "express": "4.15.4",
+    "mongodb": "2.2.31",
     "redis": "2.8.0",
     "socket.io": "2.0.3"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon server.js --ignore public"
   },
   "author": "Alex",
   "license": "ISC"

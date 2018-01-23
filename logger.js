@@ -1,5 +1,5 @@
 module.exports = function(request, reponse, next) {
-  var start = +new Date();
+  var start = new Date();
   var stream = process.stdout;
   var url = request.url;
   var method = request.method;
