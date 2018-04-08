@@ -24,7 +24,7 @@ const readline = require('readline')
 const messagesCsv = "messages.csv"
 
 let storeMessage = (data) => {
-  let csv = [data.nickname, data.message].join(',') + '\n'
+  let csv = [data.roomName, data.nickname, data.message].join(',') + '\n'
 
   fs.appendFile(messagesCsv, csv, (err) => {
     if (err) throw err;
@@ -42,8 +42,10 @@ io.on('connection', (client) => {
 
   client.on('messages', (data) => {
     let nickname = client.nickname;
+    let roomName = client.roomName;
 
     let message = {
+      roomName: roomName,
       nickname: nickname,
       message: data
     };
@@ -53,7 +55,8 @@ io.on('connection', (client) => {
     client.emit('messages', message);
   });
 
-  client.on('join', (name) => {
+  client.on('join', (roomName, name) => {
+    client.roomName = roomName;
     client.nickname = name;
 
     let lineReader = readline.createInterface({
@@ -61,14 +64,17 @@ io.on('connection', (client) => {
     });
     
     lineReader.on('line', (line) => {
+      if (!line.includes(client.roomName)) return;
+
       let content = line.split(',')
 
       // Trim quotes
-      content = content.map((component) => component.replace(/"/g, ''))
+      content = content
+                .map((component) => component.replace(/"/g, ''))
       
       client.emit('messages', {
-        nickname: content[0],
-        message: content[1]
+        nickname: content[1],
+        message: content[2]
       });
     });
 

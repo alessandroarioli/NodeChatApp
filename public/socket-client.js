@@ -1,4 +1,4 @@
-var host = location.origin.replace(/^http/, 'ws')
+var host = location.origin.replace(/^https/, 'ws')
 var socket = io.connect(host);
 var nickname, rightLeft;
 
@@ -27,9 +27,11 @@ document.getElementById('message_input_field').addEventListener("keyup", functio
 
 // Socket.io events
 socket.on('connect', function(data) {
-  nickname = (localStorage.getItem('nickname')) ? localStorage.getItem('nickname') : prompt('Insert your Nickname!');
+  roomName = (localStorage.getItem('room-name')) ? localStorage.getItem('room-name') : prompt('Insert room name');
+  nickname = (localStorage.getItem('nickname')) ? localStorage.getItem('nickname') : prompt('Insert your nickname');
+  localStorage.setItem('room-name', roomName);
   localStorage.setItem('nickname', nickname);
-  socket.emit('join', nickname);
+  socket.emit('join', roomName, nickname);
 });
 
 socket.on('messages', function(data) {
