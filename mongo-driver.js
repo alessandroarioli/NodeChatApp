@@ -1,3 +1,5 @@
+// not used anymore
+
 class MongoDB {
   constructor() {
     this.mongoClient = require('mongodb').MongoClient;

@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:8080');
+var socket = io.connect('ws://127.0.0.1:3000');
 var nickname, rightLeft;
 
 function ScrollToBottom() {
