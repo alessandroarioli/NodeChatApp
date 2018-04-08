@@ -21,7 +21,7 @@ const fs = require('fs')
 
 const readline = require('readline')
 
-const messagesCsv = "public/store_messages.csv"
+const messagesCsv = "store_messages.csv"
 
 let storeMessage = (data) => {
   let csv = [data.nickname, data.message].join(',') + '\n'
