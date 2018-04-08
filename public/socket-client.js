@@ -1,4 +1,4 @@
-var host = location.origin.replace(/^https/, 'ws')
+var host = location.origin.replace(/^http/, 'ws')
 var socket = io.connect(host);
 var nickname, rightLeft;
 
