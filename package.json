@@ -13,7 +13,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon server.js --ignore public"
+    "serve": "nodemon server.js --ignore public",
+    "start": "node server.js"
   },
   "author": "Alex",
   "license": "ISC"
