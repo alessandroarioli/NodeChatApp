@@ -2,18 +2,25 @@
 //let redisClient = redis.createClient();
 const express = require('express');
 const App = express();
-const server = App.listen(8080);
-const io = require('socket.io').listen(server);
-const fs = require('fs')
 const path = require('path');
 const logger = require('./logger');
-const readline = require('readline')
 
-const messagesCsv = "store_messages.csv"
+const PORT = process.env.PORT || 3000;
+const INDEX = path.join(__dirname, 'index.html');
 
 App.use(logger);
 
 App.use(express.static('public'));
+
+const server = App
+              .use((req, res) => res.sendFile(INDEX) )
+              .listen(PORT);
+const io = require('socket.io').listen(server);
+const fs = require('fs')
+
+const readline = require('readline')
+
+const messagesCsv = "store_messages.csv"
 
 let storeMessage = (data) => {
   let csv = [data.nickname, data.message].join(',') + '\n'
