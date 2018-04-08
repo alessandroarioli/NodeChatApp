@@ -15,12 +15,13 @@ App.use(express.static('public'));
 const server = App
               .use((req, res) => res.sendFile(INDEX) )
               .listen(PORT);
+
 const io = require('socket.io').listen(server);
 const fs = require('fs')
 
 const readline = require('readline')
 
-const messagesCsv = "store_messages.csv"
+const messagesCsv = "public/store_messages.csv"
 
 let storeMessage = (data) => {
   let csv = [data.nickname, data.message].join(',') + '\n'
